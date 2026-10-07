@@ -1,26 +1,145 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@theme {
+  --color-asphalt: #08090b;
+  --color-carbon: #0f1115;
+  --color-panel: #15181e;
+  --color-panel-2: #1c2028;
+  --color-line: #262b35;
+  --color-line-2: #343a47;
+  --color-chrome: #eceef2;
+  --color-steel: #a3aab6;
+  --color-dim: #6b7280;
+  --color-ignite: #ff4a1c;
+  --color-ignite-2: #ff7a2f;
+  --color-hazard: #ffc414;
+  --color-nitro: #2fd3ff;
+  --color-turbo: #22c55e;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --animate-needle: needle 3.2s cubic-bezier(0.5, 0, 0.2, 1) infinite alternate;
+  --animate-marquee: marquee 38s linear infinite;
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-shine: shine 2.6s ease-in-out infinite;
+  --animate-toast: toast-in 0.35s cubic-bezier(0.2, 0.9, 0.3, 1.2);
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  @keyframes needle {
+    0% { transform: rotate(-118deg); }
+    55% { transform: rotate(62deg); }
+    70% { transform: rotate(48deg); }
+    100% { transform: rotate(96deg); }
+  }
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0) rotate(var(--tilt, 0deg)); }
+    50% { transform: translateY(-14px) rotate(var(--tilt, 0deg)); }
+  }
+  @keyframes shine {
+    0% { transform: translateX(-120%) skewX(-20deg); }
+    60%, 100% { transform: translateX(220%) skewX(-20deg); }
+  }
+  @keyframes toast-in {
+    from { opacity: 0; transform: translateY(16px) scale(0.96); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
   }
 }
 
+@theme inline {
+  --font-sans: var(--font-jakarta);
+  --font-display: var(--font-chakra);
+}
+
+html {
+  color-scheme: dark;
+  scroll-behavior: smooth;
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-asphalt);
+  color: var(--color-chrome);
+}
+
+::selection {
+  background: var(--color-ignite);
+  color: white;
+}
+
+@utility carbon {
+  background-color: var(--color-carbon);
+  background-image:
+    linear-gradient(27deg, #0c0e11 5px, transparent 5px),
+    linear-gradient(207deg, #0c0e11 5px, transparent 5px),
+    linear-gradient(27deg, #13161b 5px, transparent 5px),
+    linear-gradient(207deg, #13161b 5px, transparent 5px),
+    linear-gradient(90deg, #101216 10px, transparent 10px),
+    linear-gradient(#111317 25%, #0e1013 25%, #0e1013 50%, transparent 50%, transparent 75%, #15171c 75%, #15171c);
+  background-size: 20px 20px;
+  background-position: 0 5px, 10px 0, 0 10px, 10px 5px, 0 0, 0 0;
+}
+
+@utility hazard {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    var(--color-hazard) 0 14px,
+    #111 14px 28px
+  );
+}
+
+@utility grid-lines {
+  background-image:
+    linear-gradient(to right, rgb(255 255 255 / 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(255 255 255 / 0.04) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
+
+@utility skew-cut {
+  clip-path: polygon(14px 0, 100% 0, calc(100% - 14px) 100%, 0 100%);
+}
+
+@utility corner-cut {
+  clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 18px, 100% 100%, 18px 100%, 0 calc(100% - 18px));
+}
+
+@utility text-gradient-ignite {
+  background: linear-gradient(100deg, var(--color-hazard), var(--color-ignite) 55%, #ff2a55);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@utility text-chrome {
+  background: linear-gradient(180deg, #ffffff 0%, #c9ced8 45%, #7d8593 52%, #e6e9ee 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@layer components {
+  .btn-ignite {
+    @apply skew-cut relative inline-flex items-center justify-center gap-2 overflow-hidden bg-ignite px-7 py-3.5 font-display text-sm font-bold tracking-wider text-white uppercase transition hover:bg-ignite-2 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  .btn-ghost {
+    @apply skew-cut inline-flex items-center justify-center gap-2 border border-line-2 bg-white/5 px-7 py-3.5 font-display text-sm font-bold tracking-wider text-chrome uppercase transition hover:border-hazard hover:text-hazard active:scale-[0.98];
+  }
+  .field {
+    @apply w-full rounded-lg border border-line bg-carbon px-4 py-3 text-sm text-chrome outline-none transition placeholder:text-dim focus:border-ignite focus:ring-4 focus:ring-ignite/15 aria-invalid:border-red-500/80;
+  }
+  .label {
+    @apply mb-1.5 block text-xs font-semibold tracking-wide text-steel uppercase;
+  }
+  .card {
+    @apply rounded-2xl border border-line bg-panel;
+  }
+  .chip {
+    @apply inline-flex items-center gap-1.5 rounded-full border border-line-2 bg-white/5 px-3 py-1 text-xs font-semibold text-steel;
+  }
 }
