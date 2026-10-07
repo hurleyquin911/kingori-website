@@ -1,6 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  images: {
+    unoptimized: true, // Wajib agar komponen <Image /> dari Next.js berfungsi di GitHub Pages
+  },
   /* config options here */
   experimental: {
     agentFeedback: true,
