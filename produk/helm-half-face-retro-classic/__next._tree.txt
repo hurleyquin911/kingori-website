@@ -1,0 +1,12 @@
+:HL["/kingori-website/_next/static/chunks/20pys9baqum7t.css","style"]
+:HL["/kingori-website/_next/static/media/1ccf8ef962b3f693-s.p.0gwn7w9k-i020.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+:HL["/kingori-website/_next/static/media/26c3d8b8ace0ff4f-s.p.3ogsxjq_m-7-5.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+:HL["/kingori-website/_next/static/media/374a88ea0960b3d4-s.p.2fz20jxmyia8o.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+:HL["/kingori-website/_next/static/media/79b36e90403db0bc-s.p.2pdoay2t-xuf1.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+:HL["/kingori-website/_next/static/media/ce3ab447c3d1743b-s.p.2t2ct0u059see.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+:HL["/kingori-website/_next/static/media/dc0c65e819e3bb6c-s.p.1d4mg4yt567i3.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+:HL["/kingori-website/_next/static/media/fba5a26ea33df6a3-s.p.18rizl4rsrl42.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+3:[["children",{"s":"__PAGE__","h":160}]]
+2:[["children",{"s":{"n":"slug","t":"d","k":"helm-half-face-retro-classic","s":[]},"h":96,"c":"$Q3"}]]
+1:[["children",{"s":"produk","h":64,"c":"$Q2"}]]
+0:{"b":"XT4lzOz0te-nMDsjqa-et","t":{"t":{"s":"","h":16,"c":"$Q1"}}}

@@ -1,0 +1,31 @@
+2:"$Sreact.fragment"
+3:"/kingori-website/_next/static/chunks/1cutlwv2699wy.js"
+4:"/kingori-website/_next/static/chunks/0q-lpw6tz0an2.js"
+5:I[39756,["$3","$4"],"default"]
+6:I[37457,["$3","$4"],"default"]
+d:"/kingori-website/_next/static/chunks/0nuqyw7a0l0zz.js"
+e:I[22016,["$3","$4","$d"],""]
+f:"$Sreact.suspense"
+10:I[17296,["$3","$4","$d"],"OrderView"]
+11:I[97367,["$3","$4"],"OutletBoundary"]
+14:"ViewportBoundary"
+15:I[97367,["$3","$4"],"$14"]
+16:"MetadataBoundary"
+17:I[97367,["$3","$4"],"$16"]
+18:I[27201,["$3","$4"],"IconMark"]
+8:X
+8:C
+9:X
+c:[["children",{"s":"__PAGE__","h":160,"d":{"r":["$","$2","c",{"children":[[["$","section",null,{"className":"relative isolate overflow-hidden border-b border-line","children":[["$","div",null,{"className":"carbon absolute inset-0 -z-20"}],["$","div",null,{"className":"absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_85%_0%,rgba(255,74,28,0.22),transparent_55%)]"}],["$","div",null,{"className":"mx-auto max-w-7xl px-4 sm:px-6 py-10 sm:py-12","children":[["$","nav",null,{"aria-label":"Breadcrumb","className":"flex flex-wrap items-center gap-1.5 text-xs font-semibold text-dim","children":[["$","$Le",null,{"href":"/","className":"flex items-center gap-1 hover:text-white","children":[["$","svg",null,{"viewBox":"0 0 24 24","fill":"none","stroke":"currentColor","strokeWidth":1.8,"strokeLinecap":"round","strokeLinejoin":"round","aria-hidden":"true","className":"size-3.5","children":[["$","path",null,{"d":"m3 11 9-7 9 7"}],["$","path",null,{"d":"M5.5 9.5V20h13V9.5"}]]}]," Beranda"]}],[["$","span","Pesanan Saya",{"className":"flex items-center gap-1.5","children":[["$","svg",null,{"viewBox":"0 0 24 24","fill":"none","stroke":"currentColor","strokeWidth":1.8,"strokeLinecap":"round","strokeLinejoin":"round","aria-hidden":"true","className":"size-3","children":["$","path",null,{"d":"m9 5 7 7-7 7"}]}],["$","$Le",null,{"href":"/pesanan","className":"hover:text-white","children":"Pesanan Saya"}]]}],["$","span","Detail",{"className":"flex items-center gap-1.5","children":[["$","svg",null,{"viewBox":"0 0 24 24","fill":"none","stroke":"currentColor","strokeWidth":1.8,"strokeLinecap":"round","strokeLinejoin":"round","aria-hidden":"true","className":"size-3","children":"$c:0:1:d:r:props:children:0:0:props:children:2:props:children:0:props:children:1:0:props:children:0:props:children"}],["$","span",null,{"className":"text-steel","children":"Detail"}]]}]]]}],[["$","p",null,{"className":"mt-5 font-display text-sm font-semibold tracking-[0.3em] text-ignite uppercase","children":"Pembayaran"}],["$","h1",null,{"className":"mt-1 font-display text-3xl font-bold tracking-wide text-white uppercase italic sm:text-4xl","children":"Instruksi Pembayaran"}],"$undefined"]]}]]}],["$","div",null,{"className":"mx-auto max-w-7xl px-4 pt-8 sm:px-6","children":["$","$f",null,{"fallback":["$","div",null,{"className":"card h-[600px] animate-pulse"}],"children":["$","$L10",null,{}]}]}]],[["$","script","script-0",{"src":"/kingori-website/_next/static/chunks/0nuqyw7a0l0zz.js","async":true}]],["$","$L11",null,{"children":["$","$f",null,{"name":"Next.MetadataOutlet","children":"$@12"}]}]]}],"p":"$@13","v":null,"s":"$9"}}]]
+a:[["children",{"s":"detail","h":96,"d":{"r":["$","$2","c",{"children":[null,["$","$L5",null,{"parallelRouterKey":"children","template":["$","$L6",null,{}]}]]}],"p":"$@b","v":"$8","s":"$9"},"c":"$Qc"}]]
+1:[["children",{"s":"pesanan","h":64,"d":{"r":["$","$2","c",{"children":[null,["$","$L5",null,{"parallelRouterKey":"children","template":["$","$L6",null,{}]}]]}],"p":"$@7","v":"$8","s":"$9"},"c":"$Qa"}]]
+0:{"t":{"t":{"s":"","h":16,"c":"$Q1"},"h":{"r":["$","$2","h",{"children":[null,["$","$L15",null,{"children":[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","2",{"name":"theme-color","content":"#08090b"}]]}],["$","$L17",null,{"children":[["$","div",null,{"hidden":true,"children":["$","$f",null,{"name":"Next.Metadata","children":[["$","title","0",{"children":"Instruksi Pembayaran | King Ori"}],["$","meta","1",{"name":"description","content":"King Ori: toko spare part & aksesoris motor dan mobil original. Helm, lampu LED, oli, kampas rem, shockbreaker, holder HP dan banyak lagi. Bayar via transfer bank atau QRIS."}],["$","link","2",{"rel":"icon","href":"/kingori-website/favicon.ico?favicon.117ezoe8m31dk.ico","sizes":"48x48","type":"image/x-icon"}],["$","$L18","3",{}]]}]}],null]}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],"p":"$@19","v":null,"s":"$9"}},"a":"$@1a","u":"$@1b","b":"XT4lzOz0te-nMDsjqa-et"}
+12:null
+1b:true
+9:300
+9:C
+1a:0
+b:"$undefined"
+7:"$undefined"
+19:"$undefined"
+13:"$undefined"

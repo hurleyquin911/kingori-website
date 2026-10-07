@@ -1,0 +1,4 @@
+:HL["/kingori-website/_next/static/chunks/20pys9baqum7t.css","style"]
+2:[["children",{"s":"__PAGE__","h":160}]]
+1:[["children",{"s":"/_not-found","h":64,"c":"$Q2"}]]
+0:{"b":"XT4lzOz0te-nMDsjqa-et","t":{"t":{"s":"","h":16,"c":"$Q1"}}}
