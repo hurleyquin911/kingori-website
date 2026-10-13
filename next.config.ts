@@ -1,11 +1,9 @@
 import type { NextConfig } from "next";
 
-const isProd = process.env.NODE_ENV === "production";
-const repoName = "kingori-website";
-
 const nextConfig: NextConfig = {
   output: "export",
-  basePath: isProd ? `/${repoName}` : "",
+  // Domain sendiri (kingori.store via CNAME) di root, jadi basePath harus kosong.
+  // Kalau basePath "/kingori-website", CSS/JS 404 dan halaman tampil tanpa gaya.
   trailingSlash: true,
   images: {
     unoptimized: true, // Wajib agar komponen <Image /> dari Next.js berfungsi di GitHub Pages
