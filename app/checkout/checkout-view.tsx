@@ -1,29 +1,18 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useState, type ReactNode } from "react";
 import { EmptyCart } from "@/app/keranjang/cart-view";
-import { CopyButton } from "@/components/copy-button";
 import { Icon, type IconName } from "@/components/icon";
 import { ProductArt } from "@/components/product-art";
-import { QrisCode } from "@/components/qris-code";
 import { clearCart, useCart } from "@/lib/cart";
 import { formatRupiah } from "@/lib/format";
 import { useHydrated } from "@/lib/local-store";
-import {
-  createOrderMeta,
-  saveDropshipper,
-  saveLastAddress,
-  saveOrder,
-  useLastAddress,
-  useSavedDropshipper,
-  type Dropshipper,
-  type Order,
-} from "@/lib/orders";
+import { saveDropshipper, saveLastAddress, useLastAddress, useSavedDropshipper, type Dropshipper } from "@/lib/orders";
 import { variantAccent } from "@/lib/products";
 import { getShippingQuotes, provinces, shippingDiscount, totalWeightKg, type ShippingQuote } from "@/lib/shipping";
-import { banks, qris, store } from "@/lib/store-config";
+import { banks, eWallets, store } from "@/lib/store-config";
+import { buildOrderWhatsAppMessage, orderWhatsAppUrl, paymentChoiceLabel, type PaymentMethod } from "@/lib/whatsapp-order";
 
 type Form = {
   name: string;
@@ -53,7 +42,7 @@ const EMPTY_FORM: Form = {
   landmark: "",
 };
 
-type ErrorKey = keyof Form | "shipping" | "bank" | "agree" | "dsName" | "dsPhone";
+type ErrorKey = keyof Form | "shipping" | "payment" | "agree" | "dsName" | "dsPhone";
 
 const FIELD_ORDER: ErrorKey[] = [
   "dsName",
@@ -68,7 +57,7 @@ const FIELD_ORDER: ErrorKey[] = [
   "postalCode",
   "street",
   "shipping",
-  "bank",
+  "payment",
   "agree",
 ];
 
@@ -96,8 +85,9 @@ function validate(
   form: Form,
   ds: Dropshipper | null,
   quote: ShippingQuote | undefined,
-  method: "transfer" | "qris",
+  method: PaymentMethod,
   bankId: string | null,
+  walletId: string | null,
   agree: boolean,
 ) {
   const e: Partial<Record<ErrorKey, string>> = {};
@@ -115,13 +105,13 @@ function validate(
   if (!/^\d{5}$/.test(form.postalCode)) e.postalCode = "Kode pos harus 5 angka";
   if (form.street.trim().length < 10) e.street = "Tulis alamat lengkap: nama jalan, nomor rumah, RT/RW";
   if (!quote) e.shipping = "Pilih jenis pengiriman";
-  if (method === "transfer" && !bankId) e.bank = "Pilih bank tujuan transfer";
+  if (method === "transfer" && !bankId) e.payment = "Pilih bank untuk pembayaran";
+  if (method === "ewallet" && !walletId) e.payment = "Pilih e-wallet untuk pembayaran";
   if (!agree) e.agree = "Centang konfirmasi terlebih dahulu";
   return e;
 }
 
 export function CheckoutView() {
-  const router = useRouter();
   const hydrated = useHydrated();
   const { lines, count, subtotal, weight } = useCart();
   const lastAddress = useLastAddress();
@@ -132,15 +122,16 @@ export function CheckoutView() {
   const [ds, setDs] = useState<Dropshipper>({ name: "", phone: "", shop: "" });
   const [shippingId, setShippingId] = useState<string | null>(null);
   const [insurance, setInsurance] = useState(false);
-  const [method, setMethod] = useState<"transfer" | "qris">("transfer");
+  const [method, setMethod] = useState<PaymentMethod>("transfer");
   const [bankId, setBankId] = useState<string | null>(banks[0].id);
+  const [walletId, setWalletId] = useState<string | null>(eWallets[0].id);
   const [note, setNote] = useState("");
   const [agree, setAgree] = useState(false);
   const [errors, setErrors] = useState<Partial<Record<ErrorKey, string>>>({});
   const [submitting, setSubmitting] = useState(false);
 
   if (!hydrated) return <div className="card h-[600px] animate-pulse" />;
-  if (lines.length === 0) return <EmptyCart />;
+  if (lines.length === 0 && !submitting) return <EmptyCart />;
 
   const quotes = getShippingQuotes(form.province, weight);
   const quote = quotes.find((q) => q.id === shippingId && q.available);
@@ -149,7 +140,7 @@ export function CheckoutView() {
   const insuranceCost =
     insurance && quote && quote.kind !== "pickup" ? Math.max(2_000, Math.ceil((subtotal * 0.005) / 1_000) * 1_000) : 0;
   const total = subtotal + shipCost - shipDiscount + insuranceCost;
-  const bank = banks.find((b) => b.id === bankId);
+  const paymentLabel = paymentChoiceLabel(method, bankId, walletId);
 
   function set<K extends keyof Form>(key: K, value: Form[K]) {
     setForm((f) => ({ ...f, [key]: value }));
@@ -158,7 +149,7 @@ export function CheckoutView() {
 
   function submit(e: React.FormEvent) {
     e.preventDefault();
-    const found = validate(form, isDropship ? ds : null, quote, method, bankId, agree);
+    const found = validate(form, isDropship ? ds : null, quote, method, bankId, walletId, agree);
     setErrors(found);
     const first = FIELD_ORDER.find((k) => found[k]);
     if (first) {
@@ -168,64 +159,47 @@ export function CheckoutView() {
     if (!quote) return;
 
     setSubmitting(true);
-    const meta = createOrderMeta(store.paymentDeadlineHours);
-    const order: Order = {
-      id: meta.id,
-      createdAt: meta.createdAt,
-      expiresAt: meta.expiresAt,
-      status: "menunggu-pembayaran",
-      items: lines.map((l) => ({
-        slug: l.slug,
+    const dropship = isDropship
+      ? { name: ds.name.trim(), phone: normalizePhone(ds.phone), shop: ds.shop.trim() }
+      : null;
+    const customer = { name: form.name.trim(), phone: normalizePhone(form.phone), email: form.email.trim() };
+    const address = {
+      label: form.label,
+      province: form.province,
+      city: form.city.trim(),
+      district: form.district.trim(),
+      village: form.village.trim(),
+      postalCode: form.postalCode,
+      street: form.street.trim(),
+      landmark: form.landmark.trim(),
+    };
+
+    const message = buildOrderWhatsAppMessage({
+      lines: lines.map((l) => ({
         name: l.product.name,
         variant: l.variant,
         qty: l.qty,
         price: l.product.price,
-        art: l.product.art,
-        accent: variantAccent(l.product, l.variant),
+        lineTotal: l.lineTotal,
       })),
-      customer: { name: form.name.trim(), phone: normalizePhone(form.phone), email: form.email.trim() },
-      address: {
-        label: form.label,
-        province: form.province,
-        city: form.city.trim(),
-        district: form.district.trim(),
-        village: form.village.trim(),
-        postalCode: form.postalCode,
-        street: form.street.trim(),
-        landmark: form.landmark.trim(),
-      },
-      shipping: {
-        id: quote.id,
-        courier: quote.courier,
-        service: quote.service,
-        eta: quote.etaLabel,
-        cost: quote.cost,
-        discount: shipDiscount,
-        insurance: insuranceCost,
-        weightKg: totalWeightKg(weight),
-      },
-      payment: { method, bankId: method === "transfer" ? bankId : null },
-      dropship: isDropship
-        ? { name: ds.name.trim(), phone: normalizePhone(ds.phone), shop: ds.shop.trim() }
-        : null,
-      note: note.trim(),
       subtotal,
-      uniqueCode: meta.uniqueCode,
-      total: total + meta.uniqueCode,
-    };
+      shippingLabel: `${quote.courier} ${quote.service} · ${totalWeightKg(weight)} kg`,
+      shippingEta: quote.etaLabel,
+      shippingCost: quote.cost,
+      shippingDiscount: shipDiscount,
+      insuranceCost,
+      total,
+      customer,
+      address,
+      dropship,
+      payment: { method, bankId: method === "transfer" ? bankId : null, walletId: method === "ewallet" ? walletId : null },
+      note: note.trim(),
+    });
 
-    saveOrder(order);
-    if (order.dropship) {
-      saveDropshipper(order.dropship);
-      setForm(EMPTY_FORM);
-    } else {
-      saveLastAddress({ ...order.customer, ...order.address });
-    }
+    if (dropship) saveDropshipper(dropship);
+    else saveLastAddress({ ...customer, ...address });
     clearCart();
-    setAgree(false);
-    setNote("");
-    setSubmitting(false);
-    router.push(`/pesanan/detail?id=${order.id}`);
+    window.location.assign(orderWhatsAppUrl(message));
   }
 
   const groups = (["regular", "express", "cargo", "instant", "pickup"] as const)
@@ -500,88 +474,102 @@ export function CheckoutView() {
           </Section>
 
           {/* PEMBAYARAN */}
-          <Section number={3} icon="wallet" title="Metode Pembayaran" subtitle="Tanpa payment gateway — bayar langsung ke King Ori.">
+          <Section
+            number={3}
+            icon="wallet"
+            title="Metode Pembayaran"
+            subtitle="Pilih cara bayar. Nomor rekening atau e-wallet dikirim admin via WhatsApp."
+          >
             <div className="grid gap-3 sm:grid-cols-2">
               <PayMethod
                 active={method === "transfer"}
-                onClick={() => setMethod("transfer")}
+                onClick={() => {
+                  setMethod("transfer");
+                  setErrors((er) => ({ ...er, payment: undefined }));
+                }}
                 icon="bank"
                 title="Transfer Bank"
-                text="BCA, Mandiri, BRI, BNI · cek manual oleh admin"
+                text="BCA, Mandiri, BRI, BNI — nomor rekening dikirim di WhatsApp"
               />
               <PayMethod
-                active={method === "qris"}
-                onClick={() => setMethod("qris")}
-                icon="qr"
-                title="Scan QRIS"
-                text="GoPay, OVO, DANA, ShopeePay, m-Banking"
+                active={method === "ewallet"}
+                onClick={() => {
+                  setMethod("ewallet");
+                  setErrors((er) => ({ ...er, payment: undefined }));
+                }}
+                icon="wallet"
+                title="E-wallet"
+                text="DANA, OVO, GoPay, ShopeePay, LinkAja — nomor dikirim di WhatsApp"
               />
             </div>
 
-            {method === "transfer" ? (
-              <div id="f-bank" className="mt-5 scroll-mt-32">
-                <p className="label">Pilih bank tujuan</p>
-                <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
-                  {banks.map((b) => (
-                    <button
-                      key={b.id}
-                      type="button"
-                      onClick={() => {
-                        setBankId(b.id);
-                        setErrors((er) => ({ ...er, bank: undefined }));
-                      }}
-                      aria-pressed={bankId === b.id}
-                      className={`relative flex h-16 items-center justify-center rounded-xl border-2 bg-white text-lg font-black italic transition ${
-                        bankId === b.id ? "border-ignite ring-4 ring-ignite/20" : "border-transparent opacity-70 hover:opacity-100"
-                      }`}
-                      style={{ color: b.color }}
-                    >
-                      {b.short}
-                      {bankId === b.id && (
-                        <span className="absolute -top-2 -right-2 grid size-5 place-items-center rounded-full bg-ignite text-white">
-                          <Icon name="check" className="size-3" />
-                        </span>
-                      )}
-                    </button>
-                  ))}
-                </div>
-                {errors.bank && <ErrorText>{errors.bank}</ErrorText>}
-                {bank && (
-                  <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-line bg-carbon p-4">
-                    <div>
-                      <p className="text-xs text-dim">Rekening {bank.name}</p>
-                      <p className="font-display text-xl font-bold tracking-wider text-white">{bank.accountNumber}</p>
-                      <p className="text-xs text-steel">a.n. {bank.accountName}</p>
-                    </div>
-                    <CopyButton value={bank.accountNumber} label="Salin No. Rek" />
-                  </div>
-                )}
-              </div>
-            ) : (
-              <div className="mt-5 grid items-center gap-5 rounded-xl border border-line bg-carbon p-4 sm:grid-cols-[180px_1fr]">
-                <QrisCode seed="preview" className="mx-auto w-44 sm:w-full" />
-                <div>
-                  <p className="font-semibold text-white">Bayar pakai aplikasi apa saja</p>
-                  <div className="mt-2 flex flex-wrap gap-1.5">
-                    {qris.supported.map((s) => (
-                      <span key={s} className="chip">
-                        {s}
-                      </span>
+            <div id="f-payment" className="mt-5 scroll-mt-32">
+              {method === "transfer" ? (
+                <>
+                  <p className="label">Pilih bank</p>
+                  <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
+                    {banks.map((b) => (
+                      <button
+                        key={b.id}
+                        type="button"
+                        onClick={() => {
+                          setBankId(b.id);
+                          setErrors((er) => ({ ...er, payment: undefined }));
+                        }}
+                        aria-pressed={bankId === b.id}
+                        className={`relative flex h-16 items-center justify-center rounded-xl border-2 bg-white text-lg font-black italic transition ${
+                          bankId === b.id ? "border-ignite ring-4 ring-ignite/20" : "border-transparent opacity-70 hover:opacity-100"
+                        }`}
+                        style={{ color: b.color }}
+                      >
+                        {b.short}
+                        {bankId === b.id && (
+                          <span className="absolute -top-2 -right-2 grid size-5 place-items-center rounded-full bg-ignite text-white">
+                            <Icon name="check" className="size-3" />
+                          </span>
+                        )}
+                      </button>
                     ))}
                   </div>
-                  <p className="mt-3 text-sm leading-6 text-steel">
-                    Kode QRIS lengkap beserta nominal yang harus dibayar akan tampil setelah pesanan dibuat.
-                  </p>
-                </div>
-              </div>
-            )}
+                </>
+              ) : (
+                <>
+                  <p className="label">Pilih e-wallet</p>
+                  <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-5">
+                    {eWallets.map((w) => (
+                      <button
+                        key={w.id}
+                        type="button"
+                        onClick={() => {
+                          setWalletId(w.id);
+                          setErrors((er) => ({ ...er, payment: undefined }));
+                        }}
+                        aria-pressed={walletId === w.id}
+                        className={`relative flex h-16 items-center justify-center rounded-xl border-2 bg-white px-2 text-center text-sm font-black transition ${
+                          walletId === w.id ? "border-ignite ring-4 ring-ignite/20" : "border-transparent opacity-70 hover:opacity-100"
+                        }`}
+                        style={{ color: w.color }}
+                      >
+                        {w.short}
+                        {walletId === w.id && (
+                          <span className="absolute -top-2 -right-2 grid size-5 place-items-center rounded-full bg-ignite text-white">
+                            <Icon name="check" className="size-3" />
+                          </span>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                </>
+              )}
+              {errors.payment && <ErrorText>{errors.payment}</ErrorText>}
+            </div>
 
             <div className="mt-5 flex gap-3 rounded-xl border border-nitro/25 bg-nitro/5 p-4 text-sm text-steel">
               <Icon name="info" className="mt-0.5 size-5 shrink-0 text-nitro" />
               <p>
-                Setelah klik <b className="text-white">Buat Pesanan</b>, kamu akan mendapat nomor pesanan, total bayar
-                + <b className="text-white">kode unik 3 digit</b> (memudahkan verifikasi), dan batas waktu pembayaran{" "}
-                <b className="text-white">{store.paymentDeadlineHours} jam</b>. Lalu kirim bukti bayar ke admin via WhatsApp.
+                Pembayaran tidak diproses di website. Setelah data lengkap, pesanan dikirim ke WhatsApp admin. Admin
+                akan membalas dengan <b className="text-white">nomor {method === "transfer" ? "rekening" : "e-wallet"} {paymentLabel.replace(/^(Transfer Bank |E-wallet )/, "")}</b>{" "}
+                untuk konfirmasi bayar.
               </p>
             </div>
           </Section>
@@ -638,12 +626,12 @@ export function CheckoutView() {
               />
               {shipDiscount > 0 && <SumRow label="Diskon ongkir" value={`-${formatRupiah(shipDiscount)}`} accent />}
               {insuranceCost > 0 && <SumRow label="Asuransi" value={formatRupiah(insuranceCost)} />}
-              <SumRow label="Kode unik" value="+3 digit" muted />
+              <SumRow label="Pembayaran" value={paymentLabel} muted />
               <div className="flex items-end justify-between border-t border-dashed border-line-2 pt-4">
                 <span className="font-semibold text-steel">Total bayar</span>
                 <span className="font-display text-3xl font-bold text-ignite">{formatRupiah(total)}</span>
               </div>
-              <p className="text-right text-[11px] text-dim">*belum termasuk kode unik (Rp101–Rp499)</p>
+              <p className="text-right text-[11px] text-dim">Nomor pembayaran dikirim admin via WhatsApp</p>
             </div>
             <div className="space-y-4 border-t border-line p-5">
               <label id="f-agree" className="flex cursor-pointer items-start gap-3 text-sm text-steel">
@@ -656,12 +644,12 @@ export function CheckoutView() {
                   }}
                   className="mt-0.5 size-4 accent-ignite"
                 />
-                Saya sudah memastikan alamat & pesanan benar, dan akan membayar sebelum batas waktu.
+                Saya sudah memastikan alamat & pesanan benar, dan akan mengirim data ini ke WhatsApp admin King Ori.
               </label>
               {errors.agree && <ErrorText>{errors.agree}</ErrorText>}
               <button type="submit" disabled={submitting} className="btn-ignite w-full py-4 text-base">
-                <Icon name="bolt" className="size-5" />
-                {submitting ? "Memproses…" : "Buat Pesanan"}
+                <Icon name="whatsapp" className="size-5" />
+                {submitting ? "Membuka WhatsApp…" : "Kirim Pesanan via WhatsApp"}
               </button>
               <p className="flex items-center justify-center gap-1.5 text-xs text-dim">
                 <Icon name="shield" className="size-3.5" /> Data kamu hanya dipakai untuk pengiriman
@@ -675,7 +663,7 @@ export function CheckoutView() {
 }
 
 function Stepper() {
-  const steps = ["Keranjang", "Checkout", "Pembayaran", "Dikirim"];
+  const steps = ["Keranjang", "Checkout", "WhatsApp Admin", "Dikirim"];
   return (
     <ol className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar">
       {steps.map((s, i) => {

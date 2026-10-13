@@ -104,7 +104,7 @@ export function CartView() {
               Lanjut ke Checkout <Icon name="arrowRight" className="size-4" />
             </Link>
             <p className="flex items-center justify-center gap-1.5 pt-1 text-xs text-dim">
-              <Icon name="shield" className="size-3.5" /> Bayar via transfer bank atau QRIS
+              <Icon name="shield" className="size-3.5" /> Checkout ke WhatsApp admin, bayar transfer atau e-wallet
             </p>
           </div>
         </div>

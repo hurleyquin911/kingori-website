@@ -5,7 +5,7 @@ import { Icon } from "./icon";
 const messages = [
   `Gratis ongkir s.d. ${formatRupiah(store.freeShippingMaxDiscount)} untuk belanja min. ${formatRupiah(store.freeShippingMin)}`,
   "100% produk original bergaransi",
-  "Bayar via transfer bank atau QRIS",
+  "Checkout ke WhatsApp — admin kirim nomor rekening / e-wallet",
   "Pesanan sebelum 15.00 WIB dikirim hari ini",
   "Garansi tukar 7 hari jika barang tidak sesuai",
 ];

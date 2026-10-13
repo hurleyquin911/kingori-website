@@ -13,7 +13,6 @@ const links = [
   { href: "/produk", label: "Katalog" },
   { href: "/dropship", label: "Dropship" },
   { href: "/#cara-belanja", label: "Cara Belanja" },
-  { href: "/pesanan", label: "Cek Pesanan" },
 ];
 
 function isActive(pathname: string | null, href: string) {

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { categories } from "@/lib/products";
-import { banks, qris, store } from "@/lib/store-config";
+import { banks, eWallets, store } from "@/lib/store-config";
 import { Icon } from "./icon";
 import { Logo } from "./logo";
 
@@ -45,7 +45,6 @@ export function Footer() {
           <ul className="space-y-2.5 text-sm text-steel">
             <li><Link href="/#cara-belanja" className="transition hover:text-ignite">Cara Belanja</Link></li>
             <li><Link href="/dropship" className="transition hover:text-ignite">Program Dropship</Link></li>
-            <li><Link href="/pesanan" className="transition hover:text-ignite">Cek Status Pesanan</Link></li>
             <li><Link href="/keranjang" className="transition hover:text-ignite">Keranjang</Link></li>
             <li>
               <a href={`https://wa.me/${store.whatsapp}`} target="_blank" rel="noreferrer" className="transition hover:text-ignite">
@@ -69,9 +68,13 @@ export function Footer() {
                   {b.short}
                 </span>
               ))}
-              <span className="rounded-md bg-white px-2.5 py-1 text-xs font-extrabold text-[#e11d48]">QRIS</span>
+              {eWallets.map((w) => (
+                <span key={w.id} className="rounded-md bg-white px-2.5 py-1 text-xs font-extrabold" style={{ color: w.color }}>
+                  {w.short}
+                </span>
+              ))}
             </div>
-            <p className="mt-2 text-xs text-dim">QRIS bisa dibayar via {qris.supported.slice(0, 4).join(", ")} & lainnya.</p>
+            <p className="mt-2 text-xs text-dim">Nomor rekening / e-wallet dikirim admin via WhatsApp setelah order.</p>
           </div>
           <div>
             <h3 className="mb-4 font-display text-sm font-bold tracking-widest text-white uppercase">Ikuti Kami</h3>

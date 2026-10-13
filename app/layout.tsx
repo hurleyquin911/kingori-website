@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     template: `%s | ${store.name}`,
   },
   description:
-    "King Ori: toko spare part & aksesoris motor dan mobil original. Helm, lampu LED, oli, kampas rem, shockbreaker, holder HP dan banyak lagi. Bayar via transfer bank atau QRIS.",
+    "King Ori: toko spare part & aksesoris motor dan mobil original. Helm, lampu LED, oli, kampas rem, shockbreaker, holder HP dan banyak lagi. Checkout via WhatsApp, bayar transfer bank atau e-wallet.",
 };
 
 export const viewport: Viewport = {

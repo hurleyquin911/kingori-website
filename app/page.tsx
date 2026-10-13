@@ -7,14 +7,14 @@ import { ProductCard } from "@/components/product-card";
 import { formatRupiah } from "@/lib/format";
 import { categories, getProduct, products } from "@/lib/products";
 import { courierServices } from "@/lib/shipping";
-import { banks, store } from "@/lib/store-config";
+import { banks, eWallets, store } from "@/lib/store-config";
 
 const steps: { icon: IconName; title: string; text: string }[] = [
   { icon: "search", title: "Pilih Produk", text: "Cari spare part & aksesoris, pilih varian lalu masukkan ke keranjang." },
   { icon: "pin", title: "Isi Alamat Lengkap", text: "Lengkapi nama penerima, nomor WhatsApp dan alamat pengiriman." },
   { icon: "truck", title: "Pilih Pengiriman", text: "JNE, J&T, SiCepat, AnterAja, kurir instan, atau ambil di toko." },
-  { icon: "wallet", title: "Transfer / Scan QRIS", text: "Bayar ke rekening resmi King Ori atau scan QRIS dari e-wallet." },
-  { icon: "package", title: "Konfirmasi & Dikirim", text: "Kirim bukti bayar, pesanan diverifikasi lalu langsung dikirim." },
+  { icon: "whatsapp", title: "Kirim ke WhatsApp", text: "Checkout selesai, data pesanan otomatis terkirim ke admin via WhatsApp." },
+  { icon: "package", title: "Bayar & Dikirim", text: "Admin kirim nomor rekening / e-wallet. Bayar, konfirmasi, lalu barang dikirim." },
 ];
 
 const perks: { icon: IconName; title: string; text: string }[] = [
@@ -35,7 +35,7 @@ const testimonials = [
     name: "Dimas P.",
     city: "Yogyakarta",
     ride: "Yamaha NMax",
-    text: "Beli shockbreaker tabung, ori dan bergaransi. Bayar pakai QRIS tinggal scan, besoknya sudah dikirim.",
+    text: "Beli shockbreaker tabung, ori dan bergaransi. Checkout ke WhatsApp, admin kirim nomor DANA, besoknya sudah dikirim.",
   },
   {
     name: "Sari W.",
@@ -77,7 +77,7 @@ export default function Home() {
             </h1>
             <p className="mt-6 max-w-xl text-base leading-7 text-steel sm:text-lg">
               Dari helm, lampu LED, oli, kampas rem sampai shockbreaker — semua original, bergaransi,
-              dan siap kirim ke seluruh Indonesia. Bayar mudah via transfer bank atau scan QRIS.
+              dan siap kirim ke seluruh Indonesia. Checkout lalu konfirmasi via WhatsApp — admin kirim nomor rekening atau e-wallet.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link href="/produk" className="btn-ignite">
@@ -227,8 +227,8 @@ export default function Home() {
             5 Langkah, Barang Langsung Meluncur
           </h2>
           <p className="mx-auto mt-3 max-w-2xl text-steel">
-            Tanpa ribet payment gateway. Cukup checkout, isi alamat, pilih kurir lalu transfer ke rekening
-            resmi atau scan QRIS King Ori.
+            Tanpa payment gateway. Cukup checkout, isi alamat, pilih kurir, lalu data pesanan dikirim ke
+            WhatsApp admin. Nomor rekening atau e-wallet menyusul di chat.
           </p>
         </div>
         <div className="relative mt-12">
@@ -260,9 +260,11 @@ export default function Home() {
                   {b.short}
                 </span>
               ))}
-              <span className="flex h-11 items-center gap-1.5 rounded-lg bg-white px-4 text-sm font-extrabold text-[#e11d48]">
-                <Icon name="qr" className="size-4" /> QRIS
-              </span>
+              {eWallets.map((w) => (
+                <span key={w.id} className="flex h-11 items-center rounded-lg bg-white px-3 text-sm font-extrabold" style={{ color: w.color }}>
+                  {w.short}
+                </span>
+              ))}
             </div>
           </div>
           <div className="card p-6">

@@ -25,7 +25,7 @@ const steps = [
   { title: "Daftar Gratis", text: "Isi form di bawah, admin akan mengirim info & katalog dropship." },
   { title: "Jualan di Tokomu", text: "Pasang produk King Ori di Shopee, TikTok Shop, IG, atau WhatsApp." },
   { title: "Order Mode Dropship", text: "Ada pembeli? Checkout di website ini & aktifkan “Kirim sebagai Dropshipper”." },
-  { title: "Transfer / QRIS", text: "Bayar harga modal + ongkir ke rekening atau QRIS King Ori." },
+  { title: "Kirim ke WhatsApp", text: "Data order terkirim ke admin. Nomor rekening / e-wallet menyusul di chat." },
   { title: "Kami Kirim", text: "Paket dikirim atas nama tokomu, nomor resi dikirim via WhatsApp." },
 ];
 
@@ -36,7 +36,7 @@ const faqs = [
   },
   {
     q: "Bagaimana cara order sebagai dropshipper?",
-    a: "Masukkan produk ke keranjang seperti biasa, lalu di halaman checkout aktifkan “Kirim sebagai Dropshipper”. Isi nama & HP kamu sebagai pengirim, lalu isi alamat pembelimu sebagai penerima.",
+    a: "Masukkan produk ke keranjang seperti biasa, lalu di halaman checkout aktifkan “Kirim sebagai Dropshipper”. Isi nama & HP kamu sebagai pengirim, isi alamat pembelimu sebagai penerima, lalu kirim pesanan ke WhatsApp admin.",
   },
   {
     q: "Apakah di dalam paket ada nota atau harga dari King Ori?",
@@ -44,11 +44,11 @@ const faqs = [
   },
   {
     q: "Bisa kirim dengan resi dari marketplace (Shopee/TikTok)?",
-    a: "Bisa. Kirim file/foto label resi marketplace ke WhatsApp admin setelah membayar, dan tulis di catatan pesanan bahwa kamu memakai resi marketplace.",
+    a: "Bisa. Tulis di catatan pesanan bahwa kamu memakai resi marketplace, lalu kirim file/foto label resi ke WhatsApp admin.",
   },
   {
     q: "Bagaimana jika barang rusak atau tidak sesuai?",
-    a: "Garansi tukar 7 hari tetap berlaku untuk dropshipper. Hubungi admin dengan nomor pesanan & video unboxing dari pembelimu.",
+    a: "Garansi tukar 7 hari tetap berlaku untuk dropshipper. Hubungi admin via WhatsApp dengan bukti order & video unboxing dari pembelimu.",
   },
 ];
 
