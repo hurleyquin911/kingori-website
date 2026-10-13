@@ -2,7 +2,8 @@
 
 /* eslint-disable @next/next/no-img-element */
 import Link from "next/link";
-import { use, useState, type ReactNode } from "react";
+import { useSearchParams } from "next/navigation";
+import { useState, type ReactNode } from "react";
 import { CopyButton } from "@/components/copy-button";
 import { Icon, type IconName } from "@/components/icon";
 import { ProductArt } from "@/components/product-art";
@@ -13,8 +14,8 @@ import { markOrderConfirmed, useOrders, type Order } from "@/lib/orders";
 import { banks, qris, store } from "@/lib/store-config";
 import { pad2, splitDuration, useNow } from "@/lib/use-now";
 
-export function OrderView({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = use(params);
+export function OrderView() {
+  const id = useSearchParams().get("id") ?? "";
   const hydrated = useHydrated();
   const orders = useOrders();
   const order = orders.find((o) => o.id === id);

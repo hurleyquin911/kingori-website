@@ -35,7 +35,7 @@ export function OrderList() {
         const method = o.payment.method === "qris" ? "QRIS" : `Transfer ${banks.find((b) => b.id === o.payment.bankId)?.short ?? ""}`;
         return (
           <li key={o.id}>
-            <Link href={`/pesanan/${o.id}`} className="card group flex flex-wrap items-center gap-4 p-5 transition hover:border-ignite/50">
+            <Link href={`/pesanan/detail?id=${o.id}`} className="card group flex flex-wrap items-center gap-4 p-5 transition hover:border-ignite/50">
               <span className="grid size-16 shrink-0 place-items-center rounded-xl bg-carbon ring-1 ring-line">
                 <ProductArt kind={first.art} accent={first.accent} className="size-12" />
               </span>

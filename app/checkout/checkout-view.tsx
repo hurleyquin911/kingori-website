@@ -225,7 +225,7 @@ export function CheckoutView() {
     setAgree(false);
     setNote("");
     setSubmitting(false);
-    router.push(`/pesanan/${order.id}`);
+    router.push(`/pesanan/detail?id=${order.id}`);
   }
 
   const groups = (["regular", "express", "cargo", "instant", "pickup"] as const)
