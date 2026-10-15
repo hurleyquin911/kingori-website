@@ -1,0 +1,6 @@
+User-Agent: *
+Allow: /
+Disallow: /keranjang/
+Disallow: /checkout/
+
+Sitemap: https://kingori.store/sitemap.xml
