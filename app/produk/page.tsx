@@ -4,8 +4,10 @@ import { PageHeader } from "@/components/page-header";
 import { CatalogView } from "./catalog-view";
 
 export const metadata: Metadata = {
-  title: "Katalog Produk",
-  description: "Katalog spare part & aksesoris motor dan mobil original di King Ori.",
+  title: "Katalog Suku Cadang Motor & Aksesoris Mobil Original",
+  description:
+    "Katalog lengkap King Ori: suku cadang motor, suku cadang mobil, aksesoris eksterior & interior, helm, lampu LED, oli, kampas rem, charger, dan perkakas kendaraan original.",
+  alternates: { canonical: "/produk/" },
 };
 
 export default function CatalogPage() {
@@ -13,8 +15,8 @@ export default function CatalogPage() {
     <>
       <PageHeader
         eyebrow="Katalog"
-        title="Semua Spare Part & Aksesoris"
-        description="Filter berdasarkan kategori, harga, atau cari langsung tipe motormu."
+        title="Katalog Suku Cadang & Aksesoris"
+        description="Filter suku cadang motor, suku cadang mobil, aksesoris kendaraan, atau cari langsung tipe motor/mobilmu."
         crumbs={[{ label: "Katalog" }]}
       />
       <div className="mx-auto max-w-7xl px-4 pt-10 sm:px-6">

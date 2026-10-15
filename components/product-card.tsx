@@ -10,7 +10,7 @@ export function ProductCard({ product }: { product: Product }) {
 
   return (
     <article className="group relative flex flex-col overflow-hidden rounded-2xl border border-line bg-panel transition duration-300 hover:-translate-y-1 hover:border-ignite/60 hover:shadow-[0_20px_50px_-20px_rgba(255,74,28,0.45)]">
-      <Link href={`/produk/${product.slug}`} className="relative block">
+      <Link href={`/produk/${product.slug}`} className="relative block" aria-label={product.name}>
         <ProductStage
           kind={product.art}
           accent={product.accent}

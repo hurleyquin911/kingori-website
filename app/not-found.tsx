@@ -1,6 +1,12 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { Icon } from "@/components/icon";
 import { ProductArt } from "@/components/product-art";
+
+export const metadata: Metadata = {
+  title: "Halaman tidak ditemukan",
+  robots: { index: false, follow: true },
+};
 
 export default function NotFound() {
   return (

@@ -2,8 +2,10 @@ import type { Metadata, Viewport } from "next";
 import { Chakra_Petch, Plus_Jakarta_Sans } from "next/font/google";
 import { AnnouncementBar } from "@/components/announcement-bar";
 import { Footer } from "@/components/footer";
+import { JsonLd } from "@/components/json-ld";
 import { Navbar } from "@/components/navbar";
 import { Toaster } from "@/components/toaster";
+import { organizationJsonLd, seo, siteUrl, websiteJsonLd } from "@/lib/seo";
 import { store } from "@/lib/store-config";
 import "./globals.css";
 
@@ -20,12 +22,33 @@ const jakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: {
-    default: `${store.name} — ${store.tagline}`,
+    default: seo.title,
     template: `%s | ${store.name}`,
   },
-  description:
-    "King Ori: toko spare part & aksesoris motor dan mobil original. Helm, lampu LED, oli, kampas rem, shockbreaker, holder HP dan banyak lagi. Checkout via WhatsApp, bayar transfer bank atau e-wallet.",
+  description: seo.description,
+  keywords: seo.keywords,
+  applicationName: store.name,
+  authors: [{ name: store.name, url: siteUrl }],
+  creator: store.name,
+  publisher: store.name,
+  category: "otomotif",
+  alternates: { canonical: "/" },
+  robots: { index: true, follow: true },
+  openGraph: {
+    type: "website",
+    locale: "id_ID",
+    url: siteUrl,
+    siteName: store.name,
+    title: seo.title,
+    description: seo.description,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: seo.title,
+    description: seo.description,
+  },
 };
 
 export const viewport: Viewport = {
@@ -36,6 +59,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="id" data-scroll-behavior="smooth" className={`${chakra.variable} ${jakarta.variable} h-full antialiased`}>
       <body className="flex min-h-full flex-col font-sans">
+        <JsonLd data={{ "@context": "https://schema.org", "@graph": [organizationJsonLd(), websiteJsonLd()] }} />
         <AnnouncementBar />
         <Navbar />
         <main className="flex-1">{children}</main>

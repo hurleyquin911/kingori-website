@@ -2,7 +2,10 @@ import type { Metadata } from "next";
 import { PageHeader } from "@/components/page-header";
 import { CheckoutView } from "./checkout-view";
 
-export const metadata: Metadata = { title: "Checkout" };
+export const metadata: Metadata = {
+  title: "Checkout",
+  robots: { index: false, follow: false },
+};
 
 export default function CheckoutPage() {
   return (

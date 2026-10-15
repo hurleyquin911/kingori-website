@@ -7,6 +7,7 @@ import { ProductCard } from "@/components/product-card";
 import { formatRupiah } from "@/lib/format";
 import { categories, getProduct, products } from "@/lib/products";
 import { courierServices } from "@/lib/shipping";
+import { categoryHref } from "@/lib/seo";
 import { banks, eWallets, store } from "@/lib/store-config";
 
 const steps: { icon: IconName; title: string; text: string }[] = [
@@ -66,18 +67,19 @@ export default function Home() {
           <div>
             <span className="chip border-ignite/40 bg-ignite/10 text-ignite">
               <Icon name="bolt" className="size-3.5" />
-              Spare Part &amp; Aksesoris Original
+              King Ori · Suku Cadang &amp; Aksesoris Original
             </span>
             <h1 className="mt-6 font-display text-5xl leading-[0.95] font-bold tracking-tight uppercase italic sm:text-6xl xl:text-7xl">
-              <span className="text-chrome">Upgrade</span>
+              <span className="text-chrome">Suku Cadang Motor</span>
               <br />
-              <span className="text-chrome">Tunggangan,</span>
+              <span className="text-chrome">&amp; Aksesoris Mobil</span>
               <br />
-              <span className="text-gradient-ignite">Gas Pol Tampil Ori.</span>
+              <span className="text-gradient-ignite">Original. Gas Pol.</span>
             </h1>
             <p className="mt-6 max-w-xl text-base leading-7 text-steel sm:text-lg">
-              Dari helm, lampu LED, oli, kampas rem sampai shockbreaker — semua original, bergaransi,
-              dan siap kirim ke seluruh Indonesia. Checkout lalu konfirmasi via WhatsApp — admin kirim nomor rekening atau e-wallet.
+              Toko King Ori menyediakan suku cadang motor, suku cadang mobil, aksesoris eksterior &amp; interior,
+              helm, lampu LED, oli, kampas rem, charger, dan perkakas kendaraan. Semua original, bergaransi,
+              siap kirim ke seluruh Indonesia. Checkout via WhatsApp.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link href="/produk" className="btn-ignite">
@@ -132,19 +134,19 @@ export default function Home() {
 
       {/* KATEGORI */}
       <section id="kategori" className="mx-auto max-w-7xl scroll-mt-24 px-4 pt-20 sm:px-6">
-        <SectionHeading eyebrow="Garasi King Ori" title="Belanja per Kategori" href="/produk" />
-        <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+        <SectionHeading eyebrow="Garasi King Ori" title="Kategori Suku Cadang & Aksesoris" href="/produk" />
+        <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3">
           {categories.map((c) => {
             const count = products.filter((p) => p.category === c.id).length;
             return (
               <Link
                 key={c.id}
-                href={`/produk?kategori=${c.id}`}
+                href={categoryHref(c.id)}
                 className="group relative overflow-hidden rounded-2xl border border-line bg-panel p-4 transition hover:-translate-y-0.5 hover:border-ignite/60"
               >
                 <div className="absolute -top-10 -right-10 size-28 rounded-full bg-ignite/0 blur-2xl transition group-hover:bg-ignite/25" />
                 <ProductArt kind={c.art} accent="#ff4a1c" className="size-16 transition duration-500 group-hover:scale-110 group-hover:rotate-[-6deg]" />
-                <p className="mt-3 font-display font-bold tracking-wide text-white uppercase">{c.name}</p>
+                <p className="mt-3 font-display text-sm font-bold leading-tight tracking-wide text-white uppercase sm:text-base">{c.name}</p>
                 <p className="mt-0.5 text-xs text-dim">{c.blurb}</p>
                 <span className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-steel group-hover:text-ignite">
                   {count} produk <Icon name="arrowRight" className="size-3.5" />
@@ -199,7 +201,7 @@ export default function Home() {
           eyebrow="Paket Servis Hemat"
           title="Rawat Mesin, Tarikan Makin Enteng"
           text="Oli full synthetic, busi iridium & kampas rem ceramic. Servis rutin jadi lebih hemat."
-          href="/produk?kategori=perawatan"
+          href={categoryHref("suku-cadang-motor")}
           arts={[
             ["oil", "#ff4a1c"],
             ["sparkplug", "#2fd3ff"],
@@ -210,7 +212,7 @@ export default function Home() {
           eyebrow="Touring Ready"
           title="Siap Jalan Jauh, Tetap Aman & Nyaman"
           text="Helm SNI, sarung tangan rider & holder HP anti getar untuk perjalanan tanpa drama."
-          href="/produk?kategori=helm"
+          href={categoryHref("aksesoris-sepeda-motor")}
           arts={[
             ["helmet", "#2fd3ff"],
             ["gloves", "#ffc414"],

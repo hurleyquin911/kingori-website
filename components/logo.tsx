@@ -23,14 +23,19 @@ export function LogoMark({ className = "size-10" }: { className?: string }) {
 
 export function Logo({ onNavigate }: { onNavigate?: () => void }) {
   return (
-    <Link href="/" onNavigate={onNavigate} className="group flex items-center gap-2.5">
+    <Link
+      href="/"
+      onNavigate={onNavigate}
+      aria-label="King Ori — suku cadang motor dan aksesoris mobil original"
+      className="group flex items-center gap-2.5"
+    >
       <LogoMark className="size-10 transition group-hover:rotate-[-8deg]" />
       <span className="leading-none">
         <span className="block font-display text-xl font-bold tracking-wider uppercase italic">
           King<span className="text-ignite">Ori</span>
         </span>
-        <span className="block text-[10px] font-semibold tracking-[0.25em] text-steel uppercase">
-          Parts &amp; Accessories
+        <span className="block text-[10px] font-semibold tracking-[0.18em] text-steel uppercase">
+          Suku Cadang &amp; Aksesoris
         </span>
       </span>
     </Link>

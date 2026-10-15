@@ -4,7 +4,9 @@ import { Suspense } from "react";
 import { Icon } from "@/components/icon";
 import { PageHeader } from "@/components/page-header";
 import { ProductCard } from "@/components/product-card";
+import { JsonLd } from "@/components/json-ld";
 import { getCategory, getProduct, products } from "@/lib/products";
+import { breadcrumbJsonLd, categoryHref, productHref, productJsonLd } from "@/lib/seo";
 import { ProductShowcase } from "./product-showcase";
 
 export function generateStaticParams() {
@@ -15,7 +17,21 @@ export async function generateMetadata({ params }: PageProps<"/produk/[slug]">):
   const { slug } = await params;
   const product = getProduct(slug);
   if (!product) return { title: "Produk tidak ditemukan" };
-  return { title: product.name, description: product.description };
+  const category = getCategory(product.category);
+  const title = `${product.name}${category ? ` — ${category.name}` : ""}`;
+  const description = `${product.name} original ${product.brand}. ${product.description}`.slice(0, 160);
+  return {
+    title,
+    description,
+    keywords: [product.name, product.brand, category?.name ?? "suku cadang", "King Ori", "original"],
+    alternates: { canonical: productHref(product.slug) },
+    openGraph: {
+      type: "website",
+      title,
+      description,
+      url: productHref(product.slug),
+    },
+  };
 }
 
 export default function ProductPage({ params }: PageProps<"/produk/[slug]">) {
@@ -39,11 +55,20 @@ async function ProductDetail({ params }: Pick<PageProps<"/produk/[slug]">, "para
 
   return (
     <>
+      <JsonLd data={productJsonLd(product)} />
+      <JsonLd
+        data={breadcrumbJsonLd([
+          { name: "Beranda", path: "/" },
+          { name: "Katalog", path: "/produk/" },
+          { name: category?.name ?? "Produk", path: categoryHref(product.category) },
+          { name: product.name, path: productHref(product.slug) },
+        ])}
+      />
       <PageHeader
         compact
         crumbs={[
           { label: "Katalog", href: "/produk" },
-          { label: category?.name ?? "Produk", href: `/produk?kategori=${product.category}` },
+          { label: category?.name ?? "Produk", href: categoryHref(product.category) },
           { label: product.brand },
         ]}
       />

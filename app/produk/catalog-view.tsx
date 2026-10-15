@@ -6,6 +6,7 @@ import { Icon } from "@/components/icon";
 import { ProductArt } from "@/components/product-art";
 import { ProductCard } from "@/components/product-card";
 import { categories, products } from "@/lib/products";
+import { categoryHref } from "@/lib/seo";
 
 const priceRanges = [
   { id: "", label: "Semua harga", min: 0, max: Infinity },
@@ -29,18 +30,23 @@ export function CatalogView() {
   const [showFilter, setShowFilter] = useState(false);
 
   const q = params.get("q") ?? "";
-  const kategori = params.get("kategori") ?? "";
+  const pathCategory = pathname.match(/\/produk\/kategori\/([^/]+)/)?.[1] ?? "";
+  const kategori = pathCategory || params.get("kategori") || "";
   const harga = params.get("harga") ?? "";
   const sort = params.get("urut") ?? "terlaris";
 
   function update(next: Record<string, string>) {
-    const sp = new URLSearchParams(params.toString());
-    for (const [k, v] of Object.entries(next)) {
-      if (v) sp.set(k, v);
-      else sp.delete(k);
-    }
+    const nextCat = next.kategori !== undefined ? next.kategori : kategori;
+    const nextQ = next.q !== undefined ? next.q : q;
+    const nextHarga = next.harga !== undefined ? next.harga : harga;
+    const nextSort = next.urut !== undefined ? next.urut : sort === "terlaris" ? "" : sort;
+    const sp = new URLSearchParams();
+    if (nextQ) sp.set("q", nextQ);
+    if (nextHarga) sp.set("harga", nextHarga);
+    if (nextSort && nextSort !== "terlaris") sp.set("urut", nextSort);
     const qs = sp.toString();
-    router.replace(qs ? `${pathname}?${qs}` : pathname, { scroll: false });
+    const base = nextCat ? categoryHref(nextCat) : "/produk/";
+    router.replace(qs ? `${base}?${qs}` : base, { scroll: false });
   }
 
   const range = priceRanges.find((r) => r.id === harga) ?? priceRanges[0];
@@ -91,12 +97,12 @@ export function CatalogView() {
               key={c.id}
               type="button"
               onClick={() => update({ kategori: c.id })}
-              className={`flex items-center gap-2.5 rounded-lg px-3 py-2 text-left text-sm font-semibold transition ${
+              className={`flex items-start gap-2.5 rounded-lg px-3 py-2 text-left text-sm font-semibold transition ${
                 kategori === c.id ? "bg-ignite/10 text-ignite" : "text-steel hover:bg-white/5 hover:text-white"
               }`}
             >
-              <ProductArt kind={c.art} accent="#ff4a1c" className="size-7 shrink-0" />
-              <span className="flex-1">{c.name}</span>
+              <ProductArt kind={c.art} accent="#ff4a1c" className="mt-0.5 size-7 shrink-0" />
+              <span className="flex-1 leading-snug">{c.name}</span>
               <span className="text-xs opacity-70">{products.filter((p) => p.category === c.id).length}</span>
             </button>
           ))}
@@ -206,7 +212,7 @@ export function CatalogView() {
             <p className="mt-1 max-w-sm text-sm text-steel">
               Coba kata kunci lain atau hapus filter. Bisa juga tanya admin, siapa tahu stoknya ada.
             </p>
-            <button type="button" onClick={() => router.replace(pathname)} className="btn-ghost mt-6">
+            <button type="button" onClick={() => router.replace("/produk/")} className="btn-ghost mt-6">
               Reset Filter
             </button>
           </div>

@@ -7,9 +7,10 @@ import { ProfitCalculator } from "./profit-calculator";
 import { RegisterForm } from "./register-form";
 
 export const metadata: Metadata = {
-  title: "Program Dropship",
+  title: "Dropship Suku Cadang Motor & Aksesoris Mobil",
   description:
-    "Mulai bisnis spare part & aksesoris kendaraan tanpa stok barang. Jadi dropshipper King Ori: paket dikirim atas nama tokomu, tanpa nota harga.",
+    "Gabung dropship King Ori: jual suku cadang motor, suku cadang mobil, dan aksesoris kendaraan tanpa stok. Paket dikirim atas nama tokomu, tanpa nota harga.",
+  alternates: { canonical: "/dropship/" },
 };
 
 const benefits: { icon: IconName; title: string; text: string }[] = [

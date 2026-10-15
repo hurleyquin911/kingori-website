@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { categories } from "@/lib/products";
+import { categoryHref } from "@/lib/seo";
 import { banks, eWallets, store } from "@/lib/store-config";
 import { Icon } from "./icon";
 import { Logo } from "./logo";
@@ -30,9 +31,9 @@ export function Footer() {
         <div>
           <h3 className="mb-4 font-display text-sm font-bold tracking-widest text-white uppercase">Kategori</h3>
           <ul className="space-y-2.5 text-sm text-steel">
-            {categories.slice(0, 7).map((c) => (
+            {categories.map((c) => (
               <li key={c.id}>
-                <Link href={`/produk?kategori=${c.id}`} className="transition hover:text-ignite">
+                <Link href={categoryHref(c.id)} className="transition hover:text-ignite">
                   {c.name}
                 </Link>
               </li>
