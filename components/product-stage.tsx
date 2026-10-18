@@ -1,17 +1,22 @@
+/* eslint-disable @next/next/no-img-element */
 import type { ArtKind } from "@/lib/products";
 import { ProductArt } from "./product-art";
 
 export function ProductStage({
   kind,
   accent,
+  image,
   className = "",
   artClassName = "size-[78%]",
+  imageClassName,
   watermark = true,
 }: {
   kind: ArtKind;
   accent: string;
+  image?: string | null;
   className?: string;
   artClassName?: string;
+  imageClassName?: string;
   watermark?: boolean;
 }) {
   return (
@@ -27,7 +32,16 @@ export function ProductStage({
           KING ORI
         </span>
       )}
-      <ProductArt kind={kind} accent={accent} className={`${artClassName} drop-shadow-[0_20px_30px_rgba(0,0,0,0.55)]`} />
+      {image ? (
+        <img
+          src={image}
+          alt=""
+          loading="lazy"
+          className={`relative z-0 object-contain drop-shadow-[0_16px_28px_rgba(0,0,0,0.5)] ${imageClassName ?? "size-[88%] p-3"}`}
+        />
+      ) : (
+        <ProductArt kind={kind} accent={accent} className={`${artClassName} drop-shadow-[0_20px_30px_rgba(0,0,0,0.55)]`} />
+      )}
     </div>
   );
 }

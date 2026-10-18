@@ -49,6 +49,11 @@ export const metadata: Metadata = {
     title: seo.title,
     description: seo.description,
   },
+  icons: {
+    icon: [{ url: "/logo.png", type: "image/png" }],
+    apple: [{ url: "/logo.png", type: "image/png" }],
+    shortcut: "/logo.png",
+  },
 };
 
 export const viewport: Viewport = {

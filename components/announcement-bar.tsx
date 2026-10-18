@@ -7,7 +7,6 @@ const messages = [
   "100% produk original bergaransi",
   "Checkout ke WhatsApp — admin kirim nomor rekening / e-wallet",
   "Pesanan sebelum 15.00 WIB dikirim hari ini",
-  "Garansi tukar 7 hari jika barang tidak sesuai",
 ];
 
 export function AnnouncementBar() {

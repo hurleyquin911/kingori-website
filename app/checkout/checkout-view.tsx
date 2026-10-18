@@ -179,7 +179,7 @@ export function CheckoutView() {
         name: l.product.name,
         variant: l.variant,
         qty: l.qty,
-        price: l.product.price,
+        price: l.unitPrice,
         lineTotal: l.lineTotal,
       })),
       subtotal,
@@ -606,8 +606,13 @@ export function CheckoutView() {
             <ul className="max-h-72 divide-y divide-line overflow-y-auto">
               {lines.map((l) => (
                 <li key={l.key} className="flex gap-3 px-5 py-3">
-                  <span className="relative grid size-14 shrink-0 place-items-center rounded-lg bg-carbon ring-1 ring-line">
-                    <ProductArt kind={l.product.art} accent={variantAccent(l.product, l.variant)} className="size-11" />
+                  <span className="relative grid size-14 shrink-0 place-items-center overflow-hidden rounded-lg bg-carbon ring-1 ring-line">
+                    {l.product.image ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={l.product.image} alt="" className="size-full object-cover" />
+                    ) : (
+                      <ProductArt kind={l.product.art} accent={variantAccent(l.product, l.variant)} className="size-11" />
+                    )}
                     <span className="absolute -top-1.5 -right-1.5 grid size-5 place-items-center rounded-full bg-steel text-[10px] font-bold text-asphalt">
                       {l.qty}
                     </span>

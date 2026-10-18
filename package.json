@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "import:shopee": "node scripts/import-shopee.mjs",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d out --nojekyll",
     "lint": "eslint"
@@ -24,6 +25,7 @@
     "eslint-config-next": "16.4.0",
     "gh-pages": "^6.3.0",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "xlsx": "^0.18.5"
   }
 }

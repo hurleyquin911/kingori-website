@@ -49,7 +49,7 @@ const faqs = [
   },
   {
     q: "Bagaimana jika barang rusak atau tidak sesuai?",
-    a: "Garansi tukar 7 hari tetap berlaku untuk dropshipper. Hubungi admin via WhatsApp dengan bukti order & video unboxing dari pembelimu.",
+    a: "Hubungi admin via WhatsApp dengan bukti order & video unboxing dari pembelimu. Admin akan bantu proses klaim sesuai kebijakan toko.",
   },
 ];
 

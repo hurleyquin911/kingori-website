@@ -1,22 +1,29 @@
 import Link from "next/link";
 import { discountPercent, formatCompact, formatRupiah } from "@/lib/format";
-import type { Product } from "@/lib/products";
+import { hasMultipleVariants, priceLabel, type Product } from "@/lib/products";
 import { Icon } from "./icon";
 import { ProductStage } from "./product-stage";
 import { QuickAdd } from "./quick-add";
 
 export function ProductCard({ product }: { product: Product }) {
   const discount = discountPercent(product.price, product.originalPrice);
+  const displayPrice = priceLabel(product);
+  const multi = hasMultipleVariants(product);
 
   return (
-    <article className="group relative flex flex-col overflow-hidden rounded-2xl border border-line bg-panel transition duration-300 hover:-translate-y-1 hover:border-ignite/60 hover:shadow-[0_20px_50px_-20px_rgba(255,74,28,0.45)]">
-      <Link href={`/produk/${product.slug}`} className="relative block" aria-label={product.name}>
+    <article className="group relative flex flex-col rounded-2xl border border-line bg-panel transition duration-300 hover:-translate-y-1 hover:border-ignite/60 hover:shadow-[0_20px_50px_-20px_rgba(255,74,28,0.45)]">
+      <Link
+        href={`/produk/${product.slug}`}
+        className="relative block overflow-hidden rounded-t-2xl"
+        aria-label={product.name}
+      >
         <ProductStage
           kind={product.art}
           accent={product.accent}
+          image={product.image}
           watermark={false}
           className="aspect-square"
-          artClassName="size-[74%] transition duration-500 group-hover:scale-110 group-hover:-rotate-3"
+          artClassName="size-[74%] transition duration-500 group-hover:scale-105"
         />
         {discount > 0 && (
           <span className="skew-cut absolute top-3 left-0 bg-ignite py-1 pr-4 pl-3 font-display text-xs font-bold text-white">
@@ -53,8 +60,18 @@ export function ProductCard({ product }: { product: Product }) {
             <Icon name="star" className="size-3.5" />
             <span className="font-bold">{product.rating.toFixed(1)}</span>
           </span>
-          <span className="h-3 w-px bg-line-2" />
-          <span>{formatCompact(product.sold)} terjual</span>
+          {product.sold > 0 && (
+            <>
+              <span className="h-3 w-px bg-line-2" />
+              <span>{formatCompact(product.sold)} terjual</span>
+            </>
+          )}
+          {product.stock > 0 && (
+            <>
+              <span className="h-3 w-px bg-line-2" />
+              <span>Stok {product.stock}</span>
+            </>
+          )}
         </div>
         <div className="mt-auto flex items-end justify-between gap-2">
           <div>
@@ -62,8 +79,12 @@ export function ProductCard({ product }: { product: Product }) {
               <p className="text-xs text-dim line-through">{formatRupiah(product.originalPrice)}</p>
             )}
             <p className="font-display text-lg leading-tight font-bold text-ignite">
-              {formatRupiah(product.price)}
+              {multi ? <span className="text-xs font-semibold text-steel">dari </span> : null}
+              {formatRupiah(displayPrice)}
             </p>
+            {multi && (
+              <p className="text-[11px] text-dim">{product.variants!.length} varian</p>
+            )}
           </div>
           <QuickAdd product={product} />
         </div>

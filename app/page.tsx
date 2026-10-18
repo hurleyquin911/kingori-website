@@ -5,7 +5,7 @@ import { Icon, type IconName } from "@/components/icon";
 import { ProductArt } from "@/components/product-art";
 import { ProductCard } from "@/components/product-card";
 import { formatRupiah } from "@/lib/format";
-import { categories, getProduct, products } from "@/lib/products";
+import { categories, products } from "@/lib/products";
 import { courierServices } from "@/lib/shipping";
 import { categoryHref } from "@/lib/seo";
 import { banks, eWallets, store } from "@/lib/store-config";
@@ -20,8 +20,7 @@ const steps: { icon: IconName; title: string; text: string }[] = [
 
 const perks: { icon: IconName; title: string; text: string }[] = [
   { icon: "shield", title: "100% Original", text: "Semua produk dijamin ori. Tidak ori? Uang kembali 2x lipat." },
-  { icon: "wrench", title: "Garansi Tukar 7 Hari", text: "Barang tidak sesuai atau cacat produksi bisa langsung ditukar." },
-  { icon: "package", title: "Packing Super Aman", text: "Bubble wrap tebal + kardus, gratis packing kayu untuk barang besar." },
+  { icon: "package", title: "Packing Super Aman", text: "Bubble wrap tebal + kardus" },
   { icon: "headset", title: "Admin Fast Respon", text: "Bingung cari part yang cocok? Konsultasi gratis via WhatsApp." },
 ];
 
@@ -47,13 +46,11 @@ const testimonials = [
 ];
 
 export default function Home() {
-  const flash = products.filter((p) => p.flashSale);
-  const bestSellers = [...products].sort((a, b) => b.sold - a.sold).slice(0, 8);
-  const heroPicks = [
-    getProduct("helm-full-face-kingrider-r1")!,
-    getProduct("lampu-led-projector-h4-35w")!,
-    getProduct("piringan-cakram-floating-220mm")!,
-  ];
+  const withImage = products.filter((p) => p.image && p.stock > 0);
+  const flash = withImage.filter((p) => p.flashSale).slice(0, 12);
+  const flashList = flash.length >= 6 ? flash : withImage.slice(0, 12);
+  const bestSellers = [...withImage].sort((a, b) => b.stock - a.stock || a.price - b.price).slice(0, 8);
+  const heroPicks = withImage.slice(0, 3);
 
   return (
     <>
@@ -119,8 +116,13 @@ export default function Home() {
                 }`}
                 style={{ animationDelay: `${i * -2}s`, ["--tilt" as string]: `${[-4, 3, -2][i]}deg` }}
               >
-                <span className="grid size-14 place-items-center rounded-xl bg-carbon">
-                  <ProductArt kind={p.art} accent={p.accent} className="size-12" />
+                <span className="grid size-14 place-items-center overflow-hidden rounded-xl bg-carbon">
+                  {p.image ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={p.image} alt="" className="size-full object-cover" />
+                  ) : (
+                    <ProductArt kind={p.art} accent={p.accent} className="size-12" />
+                  )}
                 </span>
                 <span className="leading-tight">
                   <span className="block max-w-32 truncate text-xs font-semibold text-steel">{p.name}</span>
@@ -176,7 +178,7 @@ export default function Home() {
             <FlashCountdown />
           </div>
           <div className="no-scrollbar -mx-5 mt-6 flex snap-x gap-4 overflow-x-auto px-5 pb-2 sm:-mx-8 sm:px-8">
-            {flash.map((p) => (
+            {flashList.map((p) => (
               <div key={p.slug} className="w-56 shrink-0 snap-start sm:w-60">
                 <ProductCard product={p} />
               </div>
@@ -286,7 +288,7 @@ export default function Home() {
 
       {/* KEUNGGULAN */}
       <section className="mx-auto max-w-7xl px-4 pt-24 sm:px-6">
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {perks.map((p) => (
             <div key={p.title} className="group card corner-cut relative overflow-hidden p-6 transition hover:border-ignite/50">
               <div className="absolute -right-6 -bottom-6 text-white/[0.03] transition group-hover:text-ignite/10">
