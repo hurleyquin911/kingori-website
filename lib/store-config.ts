@@ -2,7 +2,7 @@
 export const store = {
   name: "King Ori",
   tagline: "Spare Part & Aksesoris Kendaraan 100% Original",
-  whatsapp: "6288707493036",
+  whatsapp: "6282119199819",
   email: "admin@kingori.id",
   shopeeUrl: "https://shopee.co.id/king_ori",
   instagram: "https://instagram.com/kingori.id",

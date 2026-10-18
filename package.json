@@ -8,7 +8,7 @@
     "start": "next start",
     "import:shopee": "node scripts/import-shopee.mjs",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d out --nojekyll",
+    "deploy": "node scripts/deploy.mjs",
     "lint": "eslint"
   },
   "dependencies": {

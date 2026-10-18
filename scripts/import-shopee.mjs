@@ -17,7 +17,8 @@ function slugify(text) {
     .replace(/[\u0300-\u036f]/g, "")
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "")
-    .slice(0, 80)
+    // Pendekkan slug: path Windows + folder __next.* Next.js mudah > 260 karakter
+    .slice(0, 52)
     .replace(/-+$/g, "") || "produk";
 }
 
